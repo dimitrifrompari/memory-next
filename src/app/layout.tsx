@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Memory Game",
+  title: "Sez l'anniversaire de Barbara !",
   description: "Barbara's special 34th birthday game",
 };
 
