@@ -1,60 +1,25 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { Shuffle } from "lucide-react"
-
-// Custom images and their corresponding pop-up content
-const cardData = [
-  { 
-    image: "/images/image 01.png",
-    popupTitle: "You found a pair of 1s!",
-    popupDescription: "The number one is the first counting number."
-  },
-  { 
-    image: "/images/image 03.png",
-    popupTitle: "You matched the 2s!",
-    popupDescription: "Two is the only even prime number."
-  },
-  { 
-    image: "/images/image 04.png",
-    popupTitle: "Three's a crowd!",
-    popupDescription: "Three is considered a lucky number in many cultures."
-  },
-  { 
-    image: "/placeholder.svg?height=80&width=80&text=4",
-    popupTitle: "Four-tastic!",
-    popupDescription: "Four is the smallest composite number."
-  },
-  { 
-    image: "/placeholder.svg?height=80&width=80&text=5",
-    popupTitle: "High five!",
-    popupDescription: "Five is the number of fingers on a human hand."
-  },
-  { 
-    image: "/placeholder.svg?height=80&width=80&text=6",
-    popupTitle: "Six appeal!",
-    popupDescription: "Six is the smallest perfect number."
-  },
-  { 
-    image: "/placeholder.svg?height=80&width=80&text=7",
-    popupTitle: "Lucky seven!",
-    popupDescription: "Seven is considered a lucky number in many Western cultures."
-  },
-  { 
-    image: "/placeholder.svg?height=80&width=80&text=8",
-    popupTitle: "Great eight!",
-    popupDescription: "Eight is the largest cube in the Fibonacci sequence."
-  },
-]
+import { Shuffle, Sun, Moon } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { cardData } from "@/data/cardData"
 
 interface CardType {
   id: number
   image: string
   popupTitle: string
   popupDescription: string
+  popupImage: string
   isFlipped: boolean
   isMatched: boolean
 }
@@ -64,9 +29,12 @@ export function CustomMemoryGame() {
   const [flippedCards, setFlippedCards] = useState<number[]>([])
   const [moves, setMoves] = useState(0)
   const [showPopup, setShowPopup] = useState(false)
-  const [popupContent, setPopupContent] = useState({ title: "", description: "" })
+  const [popupContent, setPopupContent] = useState({ title: "", description: "", image: "" })
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     initializeGame()
   }, [])
 
@@ -104,6 +72,7 @@ export function CustomMemoryGame() {
         setPopupContent({
           title: newCards[id].popupTitle,
           description: newCards[id].popupDescription,
+          image: newCards[id].popupImage,
         })
         setShowPopup(true)
       } else {
@@ -119,24 +88,37 @@ export function CustomMemoryGame() {
 
   const isGameOver = cards.every((card) => card.isMatched)
 
+  if (!mounted) {
+    return null
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
-      <h1 className="text-3xl font-bold mb-2 text-primary">Custom Memory Game</h1>
-      <p className="text-lg mb-4 text-center text-secondary-foreground">Match pairs of numbers to win. Click on cards to reveal them!</p>
-      <div className="grid grid-cols-4 gap-6 mb-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 relative">
+      <Button
+        className="absolute top-4 right-4"
+        variant="outline"
+        size="icon"
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      >
+        {theme === "dark" ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+
+      <h1 className="text-3xl font-bold mb-2 text-primary">Barbara's special 34th birthday game</h1>
+      <div className="grid grid-cols-4 gap-4 mb-4">
         {cards.map((card) => (
           <Card
             key={card.id}
-            className={`w-32 h-32 flex items-center justify-center cursor-pointer transition-all duration-300 ${
-              card.isFlipped || card.isMatched ? "bg-primary" : "bg-secondary"
+            className={`w-24 h-24 flex items-center justify-center cursor-pointer transition-all duration-300 ${
+              card.isFlipped || card.isMatched ? "bg-primary text-primary-foreground" : "bg-secondary"
             }`}
             onClick={() => handleCardClick(card.id)}
           >
             {card.isFlipped || card.isMatched ? (
-              <img 
-                src={card.image} 
-                alt="Card" 
-                className="w-full h-full object-cover" 
+              <img
+                src={card.image}
+                alt={`Card ${card.id}`}
+                className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = "/placeholder.svg?height=128&width=128&text=Error";
@@ -148,7 +130,7 @@ export function CustomMemoryGame() {
       </div>
       <div className="text-lg mb-4">Moves: {moves}</div>
       {isGameOver && <div className="text-2xl font-bold mb-4 text-primary">Congratulations! You won!</div>}
-      <Button onClick={initializeGame} className="flex items-center">
+      <Button onClick={initializeGame} className="flex items-center bg-cta text-cta-foreground hover:bg-cta/90">
         <Shuffle className="mr-2 h-4 w-4" /> New Game
       </Button>
 
@@ -158,7 +140,7 @@ export function CustomMemoryGame() {
             <DialogTitle>{popupContent.title}</DialogTitle>
             <DialogDescription>{popupContent.description}</DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setShowPopup(false)}>Close</Button>
+          <img src={popupContent.image} alt="Popup" className="w-full h-auto" />
         </DialogContent>
       </Dialog>
     </div>
