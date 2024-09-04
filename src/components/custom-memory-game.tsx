@@ -56,17 +56,19 @@ export function CustomMemoryGame() {
   const handleCardClick = (id: number) => {
     if (flippedCards.length === 2) return
     if (cards[id].isMatched) return
+    if (flippedCards.includes(id)) return // Prevent clicking the same card twice
 
     const newCards = [...cards]
     newCards[id].isFlipped = true
     setCards(newCards)
 
-    setFlippedCards([...flippedCards, id])
-
-    if (flippedCards.length === 1) {
+    if (flippedCards.length === 0) {
+      setFlippedCards([id])
+    } else if (flippedCards.length === 1) {
       setMoves(moves + 1)
-      if (cards[flippedCards[0]].image === newCards[id].image) {
-        newCards[flippedCards[0]].isMatched = true
+      const firstCardId = flippedCards[0]
+      if (firstCardId !== id && cards[firstCardId].image === newCards[id].image) {
+        newCards[firstCardId].isMatched = true
         newCards[id].isMatched = true
         setCards(newCards)
         setFlippedCards([])
@@ -77,8 +79,9 @@ export function CustomMemoryGame() {
         })
         setShowPopup(true)
       } else {
+        setFlippedCards([firstCardId, id])
         setTimeout(() => {
-          newCards[flippedCards[0]].isFlipped = false
+          newCards[firstCardId].isFlipped = false
           newCards[id].isFlipped = false
           setCards(newCards)
           setFlippedCards([])
@@ -94,7 +97,8 @@ export function CustomMemoryGame() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 relative overflow-hidden">
+      
       <Button
         className="absolute top-4 right-4"
         variant="outline"
@@ -106,35 +110,42 @@ export function CustomMemoryGame() {
       </Button>
 
       <h1 className="text-3xl font-bold mb-2 text-primary">Barbara&apos;s special 34th birthday game</h1>
-      <div className="grid grid-cols-4 gap-4 mb-4">
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            className={`w-24 h-24 flex items-center justify-center cursor-pointer transition-all duration-300 ${
-              card.isFlipped || card.isMatched ? "bg-primary text-primary-foreground" : "bg-secondary"
-            }`}
-            onClick={() => handleCardClick(card.id)}
-          >
-            {card.isFlipped || card.isMatched ? (
-              <Image
-                src={card.image}
-                alt={`Card ${card.id}`}
-                width={96}
-                height={96}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = "/placeholder.svg?height=128&width=128&text=Error";
-                }}
-              />
-            ) : null}
-          </Card>
-        ))}
+      <p className="text-lg mb-6 text-center max-w-2xl mx-auto">
+        Welcome to Barbara&apos;s birthday memory game! Match pairs of cards to reveal special moments and memories. Can you find them all?
+      </p>
+      
+      <div className="w-full max-w-7xl mx-auto" style={{ zIndex: 1 }}>
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 sm:gap-4 md:gap-6">
+          {cards.map((card) => (
+            <Card
+              key={card.id}
+              className={`aspect-square flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                card.isFlipped || card.isMatched ? "bg-primary text-primary-foreground" : "bg-secondary"
+              }`}
+              onClick={() => handleCardClick(card.id)}
+            >
+              {card.isFlipped || card.isMatched ? (
+                <Image
+                  src={card.image}
+                  alt={`Card ${card.id}`}
+                  width={300}
+                  height={300}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/placeholder.svg?height=300&width=300&text=Error";
+                  }}
+                />
+              ) : null}
+            </Card>
+          ))}
+        </div>
       </div>
-      <div className="text-lg mb-4">Moves: {moves}</div>
-      {isGameOver && <div className="text-2xl font-bold mb-4 text-primary">Congratulations! You won!</div>}
+
+      <div className="text-lg mt-6 mb-4">Essais : {moves}</div>
+      {isGameOver && <div className="text-2xl font-bold mb-4 text-primary">Allez là, c&apos;est qui la championne ?</div>}
       <Button onClick={initializeGame} className="flex items-center bg-cta text-cta-foreground hover:bg-cta/90">
-        <Shuffle className="mr-2 h-4 w-4" /> New Game
+        <Shuffle className="mr-2 h-4 w-4" /> On recommence ?
       </Button>
 
       <Dialog open={showPopup} onOpenChange={setShowPopup}>
@@ -146,12 +157,23 @@ export function CustomMemoryGame() {
           <Image 
             src={popupContent.image} 
             alt="Popup" 
-            width={300} 
-            height={300} 
+            width={400}
+            height={400} 
             className="w-full h-auto" 
           />
         </DialogContent>
       </Dialog>
+
+      {/* Background image */}
+      <div className="absolute bottom-0 right-0 pointer-events-none">
+        <Image
+          src="/images/big-cat.png"  // Replace with your image path
+          alt="Background decoration"
+          width={200}  // Adjust as needed
+          height={200} // Adjust as needed
+          className="opacity-100"  // Adjust opacity as needed
+        />
+      </div>
     </div>
   )
 }
