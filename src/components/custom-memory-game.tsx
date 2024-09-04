@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { cardData } from "@/data/cardData"
+import Image from 'next/image'
 
 interface CardType {
   id: number
@@ -104,7 +105,7 @@ export function CustomMemoryGame() {
         <span className="sr-only">Toggle theme</span>
       </Button>
 
-      <h1 className="text-3xl font-bold mb-2 text-primary">Barbara's special 34th birthday game</h1>
+      <h1 className="text-3xl font-bold mb-2 text-primary">Barbara&apos;s special 34th birthday game</h1>
       <div className="grid grid-cols-4 gap-4 mb-4">
         {cards.map((card) => (
           <Card
@@ -115,9 +116,11 @@ export function CustomMemoryGame() {
             onClick={() => handleCardClick(card.id)}
           >
             {card.isFlipped || card.isMatched ? (
-              <img
+              <Image
                 src={card.image}
                 alt={`Card ${card.id}`}
+                width={96}
+                height={96}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -140,7 +143,13 @@ export function CustomMemoryGame() {
             <DialogTitle>{popupContent.title}</DialogTitle>
             <DialogDescription>{popupContent.description}</DialogDescription>
           </DialogHeader>
-          <img src={popupContent.image} alt="Popup" className="w-full h-auto" />
+          <Image 
+            src={popupContent.image} 
+            alt="Popup" 
+            width={300} 
+            height={300} 
+            className="w-full h-auto" 
+          />
         </DialogContent>
       </Dialog>
     </div>
