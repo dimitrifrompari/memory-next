@@ -149,18 +149,20 @@ export function CustomMemoryGame() {
       </Button>
 
       <Dialog open={showPopup} onOpenChange={setShowPopup}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{popupContent.title}</DialogTitle>
-            <DialogDescription>{popupContent.description}</DialogDescription>
+        <DialogContent className="p-1">
+          <DialogHeader className="space-y-4">
+            <Image 
+              src={popupContent.image} 
+              alt="Popup" 
+              width={400}
+              height={400} 
+              className="w-full h-auto rounded-lg mb-2"
+            />
+            <div className="px-4 pb-4"> {/* Added 16px padding left and right, 16px padding bottom */}
+              <DialogTitle>{popupContent.title}</DialogTitle>
+              <DialogDescription>{popupContent.description}</DialogDescription>
+            </div>
           </DialogHeader>
-          <Image 
-            src={popupContent.image} 
-            alt="Popup" 
-            width={400}
-            height={400} 
-            className="w-full h-auto" 
-          />
         </DialogContent>
       </Dialog>
 
