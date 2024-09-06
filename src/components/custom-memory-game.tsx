@@ -149,13 +149,13 @@ export function CustomMemoryGame() {
       </Button>
 
       <Dialog open={showPopup} onOpenChange={setShowPopup}>
-        <DialogContent className="p-1">
+        <DialogContent className="p-1 sm:max-w-[800px]"> {/* Increased max-width */}
           <DialogHeader className="space-y-4">
             <Image 
               src={popupContent.image} 
               alt="Popup" 
-              width={400}
-              height={400} 
+              width={800}
+              height={800} 
               className="w-full h-auto rounded-lg mb-2"
             />
             <div className="px-4 pb-4"> {/* Added 16px padding left and right, 16px padding bottom */}

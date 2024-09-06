@@ -10,37 +10,37 @@ export const cardData = [
       image: "/images/2.png",
       popupTitle: "You matched the 2s!",
       popupDescription: "Two is the only even prime number.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup2.png"
     },
     { 
       image: "/images/3.png",
       popupTitle: "Three's a crowd!",
       popupDescription: "Three is considered a lucky number in many cultures.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup3.png"
     },
     { 
       image: "/images/4.png",
       popupTitle: "Four-tastic!",
       popupDescription: "Four is the smallest composite number.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup4.png"
     },
     { 
       image: "/images/5.png",
       popupTitle: "High five!",
       popupDescription: "Five is the number of fingers on a human hand.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup5.png"
     },
     { 
       image: "/images/6.png",
       popupTitle: "Six appeal!",
       popupDescription: "Six is the smallest perfect number.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup6.png"
     },
     { 
       image: "/images/7.png",
       popupTitle: "Lucky seven!",
       popupDescription: "Seven is considered a lucky number in many Western cultures.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup7.png"
     },
     { 
       image: "/images/8.png",
