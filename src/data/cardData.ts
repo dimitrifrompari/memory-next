@@ -46,31 +46,31 @@ export const cardData = [
       image: "/images/8.png",
       popupTitle: "Great eight!",
       popupDescription: "Eight is the largest cube in the Fibonacci sequence.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup8.png"
     },
     // New pairs
     { 
       image: "/images/9.png",
       popupTitle: "Nine lives!",
       popupDescription: "Nine is the square of three.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup9.png"
     },
     { 
       image: "/images/10.png",
       popupTitle: "Perfect 10!",
       popupDescription: "Ten is the base of the decimal numeral system.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup10.png"
     },
     { 
       image: "/images/11.png",
       popupTitle: "Eleven's heaven!",
       popupDescription: "Eleven is the first repdigit.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup11.png"
     },
     { 
       image: "/images/12.png",
       popupTitle: "Dozen it feel good?",
       popupDescription: "Twelve is the number of months in a year.",
-      popupImage: "/images/popup1.png"
+      popupImage: "/images/popup12.png"
     },
   ]
