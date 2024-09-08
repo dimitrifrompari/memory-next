@@ -15,6 +15,14 @@ import {
 import { cardData } from "@/data/cardData"
 import Image from 'next/image'
 
+// Modify the preloadImages function
+const preloadImages = (images: string[]) => {
+  images.forEach((src) => {
+    const img = new window.Image();
+    img.src = src;
+  });
+};
+
 interface CardType {
   id: number
   image: string
@@ -51,7 +59,18 @@ export function CustomMemoryGame() {
     setCards(shuffledCards)
     setFlippedCards([])
     setMoves(0)
+
+    // Preload all images
+    const imagesToPreload = shuffledCards.map(card => card.image);
+    preloadImages(imagesToPreload);
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const imagesToPreload = cards.map(card => card.image);
+      preloadImages(imagesToPreload);
+    }
+  }, [cards]);
 
   const handleCardClick = (id: number) => {
     if (flippedCards.length === 2) return
@@ -131,6 +150,7 @@ export function CustomMemoryGame() {
                   width={300}
                   height={300}
                   className="w-full h-full object-cover"
+                  priority={card.id < 8} // Prioritize loading for the first 8 cards
                   onError={(e) => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = "/placeholder.svg?height=300&width=300&text=Error";
