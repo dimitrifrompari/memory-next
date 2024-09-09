@@ -128,9 +128,9 @@ export function CustomMemoryGame() {
         <span className="sr-only">Toggle theme</span>
       </Button>
 
-      <h1 className="text-3xl font-bold mb-2 text-primary">Barbara&apos;s special 34th birthday game</h1>
+      <h1 className="text-3xl font-bold mb-2 text-primary">Sez un jour spécial aujourd'hui 🎉</h1>
       <p className="text-lg mb-6 text-center max-w-2xl mx-auto">
-        Welcome to Barbara&apos;s birthday memory game! Match pairs of cards to reveal special moments and memories. Can you find them all?
+        ➡️ Ici, c'est le memory game de la Sez pour l'anniversaire de Barbara ! Match les paires de cartes pour découvrir les cadeaux.
       </p>
       
       <div className="w-full max-w-7xl mx-auto" style={{ zIndex: 1 }}>
