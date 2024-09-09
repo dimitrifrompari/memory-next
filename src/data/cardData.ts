@@ -9,7 +9,7 @@ export const cardData = [
     { 
       image: "/images/2.png",
       popupTitle: "Une belle paire...",
-      popupDescription: "De NB hein !Parce que tu ne t'en rappelles peut-être pas, mais elles te plaisaient en 2023. Enfin, je crois... !",
+      popupDescription: "De NB hein !Parce que tu ne t'en rappelles peut-être pas, mais elles te plaisaient en 2023. Enfin, je crois... ! Ah et je les ai prises en 37.5 mdr. Donc soit tu fais un effort, soit on peut les échanger.",
       popupImage: "/images/popup2.png"
     },
     { 
@@ -45,7 +45,7 @@ export const cardData = [
     { 
       image: "/images/8.png",
       popupTitle: "La jupe stylée d'Uniqlo",
-      popupDescription: "Ouais parce que moi aussi je l'ai trouvée très cool et que je te vois grave avec. Peut-être avec une nouvelle paire de chaussure ?!",
+      popupDescription: "Ouais parce que moi aussi je l'ai trouvée très cool et que je te vois grave avec. Peut-être avec une nouvelle paire de chaussure ?! PS : bon j'ai pris du S, mais tu changeras peut-être en M ? Ou pas !",
       popupImage: "/images/popup8.png"
     },
     // New pairs
