@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { cardData } from "@/data/cardData"
 import Image from 'next/image'
+import { WelcomePopin } from "@/components/ui/welcome-popin"
 
 // Modify the preloadImages function
 const preloadImages = (images: string[]) => {
@@ -41,11 +42,7 @@ export function CustomMemoryGame() {
   const [popupContent, setPopupContent] = useState({ title: "", description: "", image: "" })
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    initializeGame()
-  }, [])
+  const [showWelcome, setShowWelcome] = useState(true)
 
   const initializeGame = () => {
     const shuffledCards = [...cardData, ...cardData]
@@ -59,18 +56,16 @@ export function CustomMemoryGame() {
     setCards(shuffledCards)
     setFlippedCards([])
     setMoves(0)
-
-    // Preload all images
-    const imagesToPreload = shuffledCards.map(card => card.image);
-    preloadImages(imagesToPreload);
   }
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const imagesToPreload = cards.map(card => card.image);
-      preloadImages(imagesToPreload);
-    }
-  }, [cards]);
+    setMounted(true)
+    initializeGame() // Initialize the game immediately
+  }, [])
+
+  const handleWelcomeClose = () => {
+    setShowWelcome(false)
+  }
 
   const handleCardClick = (id: number) => {
     if (flippedCards.length === 2) return
@@ -117,14 +112,15 @@ export function CustomMemoryGame() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 relative overflow-hidden">
-      
+      {/* Theme toggle button */}
       <Button
-        className="absolute top-4 right-4"
         variant="outline"
         size="icon"
+        className="absolute top-4 right-4"
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       >
-        {theme === "dark" ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
         <span className="sr-only">Toggle theme</span>
       </Button>
 
@@ -133,7 +129,7 @@ export function CustomMemoryGame() {
         ➡️ Ici, c'est le memory game de la Sez pour l'anniversaire de Barbara ! Match les paires de cartes pour découvrir les cadeaux.
       </p>
       
-      <div className="w-full max-w-7xl mx-auto" style={{ zIndex: 1 }}>
+      <div className="w-full max-w-7xl mx-auto">
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 sm:gap-4 md:gap-6">
           {cards.map((card) => (
             <Card
@@ -150,7 +146,7 @@ export function CustomMemoryGame() {
                   width={300}
                   height={300}
                   className="w-full h-full object-cover"
-                  priority={card.id < 8} // Prioritize loading for the first 8 cards
+                  priority={card.id < 8}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = "/placeholder.svg?height=300&width=300&text=Error";
@@ -163,37 +159,21 @@ export function CustomMemoryGame() {
       </div>
 
       <div className="text-lg mt-6 mb-4">Essais : {moves}</div>
-      {isGameOver && <div className="text-2xl font-bold mb-4 text-primary">Allez là, c&apos;est qui la championne ?</div>}
+      {isGameOver && <div className="text-2xl font-bold mb-4 text-primary">Allez là, c'est qui la championne ?</div>}
       <Button onClick={initializeGame} className="flex items-center bg-cta text-cta-foreground hover:bg-cta/90">
         <Shuffle className="mr-2 h-4 w-4" /> On recommence ?
       </Button>
 
-      <Dialog open={showPopup} onOpenChange={setShowPopup}>
-        <DialogContent className="p-1 sm:max-w-[800px]"> {/* Increased max-width */}
-          <DialogHeader className="space-y-4">
-            <Image 
-              src={popupContent.image} 
-              alt="Popup" 
-              width={800}
-              height={800} 
-              className="w-full h-auto rounded-lg mb-2"
-            />
-            <div className="px-4 pb-4"> {/* Added 16px padding left and right, 16px padding bottom */}
-              <DialogTitle>{popupContent.title}</DialogTitle>
-              <DialogDescription>{popupContent.description}</DialogDescription>
-            </div>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      {showWelcome && <WelcomePopin onClose={() => setShowWelcome(false)} />}
 
       {/* Background image */}
       <div className="absolute bottom-0 right-0 pointer-events-none">
         <Image
-          src="/images/big-cat.png"  // Replace with your image path
+          src="/images/big-cat.png"
           alt="Background decoration"
-          width={200}  // Adjust as needed
-          height={200} // Adjust as needed
-          className="opacity-100"  // Adjust opacity as needed
+          width={200}
+          height={200}
+          className="opacity-100"
         />
       </div>
     </div>
