@@ -20,7 +20,7 @@ import { WelcomePopin } from "@/components/ui/welcome-popin"
 const preloadImages = (images: string[]): Promise<void> => {
   const loadImage = (src: string): Promise<void> =>
     new Promise((resolve, reject) => {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => resolve();
       img.onerror = reject;
       img.src = src;
