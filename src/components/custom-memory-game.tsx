@@ -17,11 +17,16 @@ import Image from 'next/image'
 import { WelcomePopin } from "@/components/ui/welcome-popin"
 
 // Modify the preloadImages function
-const preloadImages = (images: string[]) => {
-  images.forEach((src) => {
-    const img = new window.Image();
-    img.src = src;
-  });
+const preloadImages = (images: string[]): Promise<void> => {
+  const loadImage = (src: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = reject;
+      img.src = src;
+    });
+
+  return Promise.all(images.map(loadImage)).then(() => {});
 };
 
 interface CardType {
@@ -43,6 +48,8 @@ export function CustomMemoryGame() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [showWelcome, setShowWelcome] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isWaiting, setIsWaiting] = useState(false)
 
   const initializeGame = () => {
     const shuffledCards = [...cardData, ...cardData]
@@ -61,25 +68,42 @@ export function CustomMemoryGame() {
 
   useEffect(() => {
     setMounted(true)
-    initializeGame()
+    const imagesToPreload = cardData.flatMap(card => [card.image, card.popupImage])
+    preloadImages(imagesToPreload)
+      .then(() => {
+        setIsLoading(false)
+        initializeGame()
+      })
+      .catch(error => {
+        console.error("Failed to preload images:", error)
+        setIsLoading(false)
+        initializeGame()
+      })
   }, [])
 
+  if (!mounted) return null
+  if (isLoading) return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+
   const handleCardClick = (id: number) => {
+    if (isWaiting) return // Prevent clicks while waiting for unmatched pair to flip back
     if (flippedCards.length === 2) return
     if (cards.find(card => card.id === id)?.isMatched) return // Prevent clicking on already matched cards
     if (flippedCards.includes(id)) return // Prevent clicking on the same card twice
 
+    const newFlippedCards = [...flippedCards, id]
+    setFlippedCards(newFlippedCards)
     setCards(cards.map(card => card.id === id ? { ...card, isFlipped: true } : card))
-    setFlippedCards([...flippedCards, id])
     setMoves(moves + 1)
 
-    if (flippedCards.length === 1) {
-      const firstCard = cards.find(card => card.id === flippedCards[0])
-      const secondCard = cards.find(card => card.id === id)
-      if (firstCard && secondCard && firstCard.image === secondCard.image && firstCard.id !== secondCard.id) {
+    if (newFlippedCards.length === 2) {
+      const [firstId, secondId] = newFlippedCards
+      const firstCard = cards.find(card => card.id === firstId)
+      const secondCard = cards.find(card => card.id === secondId)
+
+      if (firstCard && secondCard && firstCard.image === secondCard.image) {
         // Matched pair
         setCards(cards.map(card => 
-          card.id === firstCard.id || card.id === secondCard.id 
+          card.id === firstId || card.id === secondId 
             ? { ...card, isMatched: true, isFlipped: true } 
             : card
         ))
@@ -89,22 +113,22 @@ export function CustomMemoryGame() {
           image: secondCard.popupImage
         })
         setShowPopup(true)
-        setFlippedCards([]) // Reset flipped cards after a match
+        setFlippedCards([])
       } else {
         // No match
+        setIsWaiting(true)
         setTimeout(() => {
           setCards(cards.map(card => 
             !card.isMatched ? { ...card, isFlipped: false } : card
           ))
           setFlippedCards([])
+          setIsWaiting(false)
         }, 1000)
       }
     }
   }
 
   const isGameOver = cards.every(card => card.isMatched)
-
-  if (!mounted) return null
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 relative overflow-hidden">
