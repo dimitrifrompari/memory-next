@@ -67,6 +67,7 @@ export function CustomMemoryGame() {
   const handleCardClick = (id: number) => {
     if (flippedCards.length === 2) return
     if (cards.find(card => card.id === id)?.isMatched) return // Prevent clicking on already matched cards
+    if (flippedCards.includes(id)) return // Prevent clicking on the same card twice
 
     setCards(cards.map(card => card.id === id ? { ...card, isFlipped: true } : card))
     setFlippedCards([...flippedCards, id])
@@ -75,7 +76,7 @@ export function CustomMemoryGame() {
     if (flippedCards.length === 1) {
       const firstCard = cards.find(card => card.id === flippedCards[0])
       const secondCard = cards.find(card => card.id === id)
-      if (firstCard && secondCard && firstCard.image === secondCard.image) {
+      if (firstCard && secondCard && firstCard.image === secondCard.image && firstCard.id !== secondCard.id) {
         // Matched pair
         setCards(cards.map(card => 
           card.id === firstCard.id || card.id === secondCard.id 
